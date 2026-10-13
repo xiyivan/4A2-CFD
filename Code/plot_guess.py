@@ -13,6 +13,7 @@ def main():
 
     # Construct full filenames to read the guess data
     filename = 'out_guess_' + sys.argv[-1] + '.bin'
+    imagename = 'out_guess_' + sys.argv[-1] + '.jpg'
 
     # Read the case from file
     g = read_case(filename)
@@ -40,6 +41,7 @@ def main():
         plot_wall(ax[n],g)
 
     # Show all the plots
+    plt.savefig(imagename)
     plt.show()
 
     

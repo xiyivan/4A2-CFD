@@ -13,6 +13,7 @@ def main():
 
     # Construct full filename to read the grid data
     filename = 'out_coord_' + sys.argv[-1] + '.bin'
+    imagename = 'out_coord_' + sys.argv[-1] + '.jpg'
 
     # Read the case from file
     g = read_case(filename)
@@ -31,6 +32,7 @@ def main():
     plot_bound(ax,g)
 
     # Show all the plots
+    plt.savefig(imagename)
     plt.show()
 
     

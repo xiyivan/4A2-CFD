@@ -13,6 +13,7 @@ def main():
 
     # Construct full filenames to read the guess data
     filename = 'conv_' + sys.argv[-1] + '.csv'
+    imagename = 'conv_' + sys.argv[-1] + '.jpg'
 
     # Read the history from file
     l = read_conv(filename)
@@ -41,6 +42,7 @@ def main():
     ax.legend(colnames)
 
     # Show all the plots
+    plt.savefig(imagename)
     plt.show()
 
     

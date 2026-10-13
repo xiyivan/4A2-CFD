@@ -55,6 +55,8 @@ def main():
     # Show all the plots that have been drawn so far, this will cause your
     # terminal to hang until you close them down. Pressing the "q" key is a good
     # shortcut for this.
+    imagename = 'advection_output.jpg'
+    plt.savefig(imagename)
     plt.show()
 
     # Oh no! The dissipation is awful for this first order scheme isn't it, 

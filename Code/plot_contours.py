@@ -14,6 +14,7 @@ def main():
     # Construct full filenames to read the run data
     inname = 'input_' + sys.argv[-1] + '.txt'
     outname = 'out_final_' + sys.argv[-1] + '.bin'
+    imagename = 'contour_' + sys.argv[-1] + '.jpg'
 
     # Read the settings and the case from file
     av = read_settings(inname)
@@ -61,6 +62,7 @@ def main():
         plot_wall(ax,g)
 
     # Show all the plots
+    plt.savefig(imagename)
     plt.show()
 
     
