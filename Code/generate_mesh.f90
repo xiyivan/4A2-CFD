@@ -16,6 +16,10 @@
 !     Declare integers or any extra variables you need here
 !     INSERT
 
+      integer :: i, j
+      real :: sj(g%nj)
+
+
 !     Get the size of the mesh and store locally for convenience
       ni = g%ni; nj = g%nj;
 
@@ -28,6 +32,7 @@
 !     Interpolate the geometry curves to the required resolution in the 
 !     i-direction, this allows the mesh to be refined without altering the 
 !     geometry definition file, the data is stored at "j = 1" and "j = nj"
+!     interpolate the geometry curve uniformly along s, with resolution si 
       call interp(si_a,geom%x_a,si,g%x(:,1))
       call interp(si_a,geom%y_a,si,g%y(:,1))
       call interp(si_b,geom%x_b,si,g%x(:,nj))
@@ -38,6 +43,24 @@
 !     "linspace", loop over the mesh in the i-direction and calculate the
 !     intermediate coordinates from a weighted sum of the two boundaries
 !     INSERT
+      
+      call linspace(0.0,1.0,sj)
+
+      ! do i = 1, ni
+      !       g%x(i,2:nj-1) = (1-sj(2:nj-1)) * g%x(i,1) + sj(2:nj-1) * g%x(i,nj)
+      !       g%y(i,2:nj-1) = (1-sj(2:nj-1)) * g%y(i,1) + sj(2:nj-1) * g%y(i,nj)
+      ! end do
+
+!     Possible more efficient way is to run by each row, try below
+
+      do j = 2, nj-1
+            g%x(:,j) = (1.0 - sj(j)) * g%x(:,1) + sj(j) * g%x(:,nj)
+            g%y(:,j) = (1.0 - sj(j)) * g%y(:,1) + sj(j) * g%y(:,nj)
+      end do
+!     END INSERT
+
+
+            
 
 !     In all of the test cases for the basic solver the the "j = 1" and "j = nj"
 !     boundaries are walls, for the extensions you may need to return to this
@@ -49,7 +72,6 @@
 
 !     Print that the mesh has been created
       write(6,*) 'Interpolated mesh from the bounding geometry curves'
-      write(6,*)
 
       end subroutine generate_mesh
 
