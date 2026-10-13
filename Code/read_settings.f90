@@ -11,17 +11,25 @@
       type(t_bconds), intent(out) :: bcs
       character(len=80) :: tempname
 
+
 !     Read the case name and trim to the required length
       read(5,*) tempname
       av%casename = trim(tempname)
 
 !     You should read in the following variables sequentially and store them in
 !     the dervived "av" datatype with the % syntax:
-!         gam, rgas
+!         gam, rgas 
 !         cfl, sfac, d_max
 !         nsteps
 !         ni, nj
 !     INSERT
+
+      read(5,*) av%gam, av%rgas
+      read(5, *) av%cfl, av%sfac, av%d_max
+      read(5, *) av%nsteps
+      read(5, *) av%ni, av%nj
+
+ !    END INSERT
 
 !     Calculate other gas constants used throughout the calculation
       av%cp = av%rgas * av%gam / (av%gam - 1.0)
@@ -41,14 +49,26 @@
 !         pstag, tstag, alpha, rfin
 !     INSERT
 
+      read(5,*) bcs%pstag, bcs%tstag, bcs%alpha, bcs%rfin
+
+!     END INSERT
+
 !     Convert the inlet angle to radians
       bcs%alpha = bcs%alpha * 3.14159 / 180.0
 
 !     Calculate the inlet stagnation density "rostag"
 !     INSERT
 
+      bcs%rostag = bcs%pstag / (av%rgas * bcs%tstag)
+
+!     END INSERT
+
 !     Read the outlet static pressure and store into the "bcs" datatype
 !     INSERT
+
+      read(5, *) bcs%p_out
+
+!     END INSERT
 
 !     Print the settings to check they have been read, you can use this syntax
 !     anywhere else you want in the program to debug your code
