@@ -28,11 +28,11 @@
 !   arrays with lists of indices
 !   INSERT
 
-    g%area = 0.5 * abs( &
-    (g%x(2:ni,2:nj)-g%x(1:ni-1,1:nj-1)) * &
+    g%area = 0.5 * &
+    ((g%x(2:ni,2:nj)-g%x(1:ni-1,1:nj-1)) * &
     (g%y(1:ni-1,2:nj)-g%y(2:ni,1:nj-1)) - &
     (g%y(2:ni,2:nj)-g%y(1:ni-1,1:nj-1)) * &
-    (g%x(1:ni-1,2:nj)-g%x(2:ni,1:nj-1)) )
+    (g%x(1:ni-1,2:nj)-g%x(2:ni,1:nj-1))) 
 
 !   END INSERT
 
