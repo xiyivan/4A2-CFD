@@ -14,6 +14,7 @@
 
 !   Declare the other variables you need here
 !   INSERT
+    real :: v(g%nj), T(g%nj), p(g%nj)
 
 !   At the inlet boundary the change in density is driven towards "rostag",
 !   which is then used to obtain the other flow properties to match the
@@ -38,9 +39,27 @@
 !   "hstag(1,:)"
 !   INSERT
 
+    g%ro(1, :) = bcs%ro
+
+    p = bcs%pstag * (bcs%ro/bcs%rostag)**av%gam
+    g%p(1, :) = p
+    T = p/(av%rgas * bcs%ro)
+    v = sqrt((bcs%tstag - T)*2*av%cp)
+    g%vx(1,:) = v * cos(bcs%alpha)
+    g%vy(1,:) = v * sin(bcs%alpha)
+    g%rovx(1,:) = g%vx(1,:) * bcs%ro
+    g%rovy(1,:) = g%vy(1,:) * bcs%ro
+    g%roe(1,:) = bcs%ro * (av%cv * T + 0.5 * v**2)
+    g%hstag(1,:) = av%cp * bcs%tstag
+
+!   END INSERT
+
+
 !   For the outlet boundary condition set the value of "p(ni,:)" to the
 !   specified value of static pressure "p_out" in "bcs"
 !   INSERT
+
+    g%p(av%ni, :) = bcs%p_out
 
     end subroutine apply_bconds
 
