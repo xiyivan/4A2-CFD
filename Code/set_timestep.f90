@@ -16,17 +16,35 @@
 !   temperature and gas constants
 !   INSERT
 
+    astag = sqrt(av%gam * av%rgas * bcs%tstag)
+
+!   END INSERT
+
 !   Assume that the maximum flow speed is also equal to "astag". This will 
 !   be pessimistic for subsonic flows but may be optimistic for supersonic 
 !   flows. In the latter case the length of the time step as determined by 
 !   may need to be reduced by improving this routine or varying the CFL number
 !   INSERT
 
+    v_max = 2*astag
+
+!   END INSERT
+
 !   Calculate the timestep using the CFL number and store it in "av%dt"
 !   INSERT
 
+    av%dt = av%cfl * g%l_min/v_max
+
+!   END INSERT
+
 !   Print the calculated timestep and some intermediate values
 !   INSERT
+
+    write(6,*) "Timestep calculation completed"
+    write(6,*) "time step: ", av%dt, "; cfl: ", av%cfl, "; l_min: ", g%l_min, "; v_max: ", v_max
+    write(6,*)
+
+!   END INSERT
 
     end subroutine set_timestep
 

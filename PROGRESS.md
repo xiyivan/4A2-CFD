@@ -7,8 +7,8 @@ Progress tracker for the initial phase of the Euler solver implementation.
 - [x] `generate_mesh.f90`
 - [x] `calc_areas.f90`
 - [x] `check_mesh.f90`
-- [ ] `flow_guess.f90`
-- [ ] `set_timestep.f90`
+- [X] `flow_guess.f90`
+- [x] `set_timestep.f90`
 - [ ] `set_secondary.f90`
 - [ ] `apply_bconds.f90`
 - [ ] `euler_iteration.f90`
