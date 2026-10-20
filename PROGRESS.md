@@ -11,7 +11,7 @@ Progress tracker for the initial phase of the Euler solver implementation.
 - [x] `set_timestep.f90`
 - [X] `set_secondary.f90`
 - [X] `apply_bconds.f90`
-- [ ] `euler_iteration.f90`
+- [X] `euler_iteration.f90`
 - [ ] `flux_stencil.f90`
 - [ ] `smooth_stencil.f90`
 - [ ] `routines.f90`
