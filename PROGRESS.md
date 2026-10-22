@@ -13,8 +13,8 @@ Progress tracker for the initial phase of the Euler solver implementation.
 - [X] `apply_bconds.f90`
 - [X] `euler_iteration.f90`
 - [X] `flux_stencil.f90`
-- [ ] `smooth_stencil.f90`
-- [ ] `routines.f90`
+- [X] `smooth_stencil.f90`
+- [X] `routines.f90`
 - [ ] `plot_contours.py`
 
 ## Status

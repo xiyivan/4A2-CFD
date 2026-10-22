@@ -22,6 +22,17 @@ def calc_secondary(av,b):
     # mesh coordinates and primary flow variables.
     # INSERT
 
+    b['vx'] = b['rovx'] / b['ro']
+    b['vy'] = b['rovy'] / b['ro']
+    b['p'] = (av['gam'] - 1) * (b['roe'] - 0.5 * b['ro'] *
+        (b['vx']**2 + b['vy']**2))
+    b['hstag'] = (b['roe'] + b['p']) / b['ro']
+
+    # Static temperature and Mach number for non-dimensional plots
+    b['t'] = b['p'] / (b['ro'] * av['rgas'])
+    b['mach'] = np.sqrt(b['vx']**2 + b['vy']**2) / \
+        np.sqrt(av['gam'] * av['rgas'] * b['t'])
+
     return b
 
 ################################################################################
