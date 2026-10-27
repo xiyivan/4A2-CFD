@@ -15,11 +15,11 @@ Progress tracker for the initial phase of the Euler solver implementation.
 - [X] `flux_stencil.f90`
 - [X] `smooth_stencil.f90`
 - [X] `routines.f90`
-- [ ] `plot_contours.py`
+- [X] `plot_contours.py`
 
 ## Status
 
-Completed: 3 / 14
+Completed: 14 / 14
 
 ## Completion evidence
 

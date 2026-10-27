@@ -14,7 +14,7 @@ def main():
     # Construct full filenames to read the run data
     inname = 'input_' + sys.argv[-1] + '.txt'
     outname = 'out_final_' + sys.argv[-1] + '.bin'
-    imagename = 'contour_' + sys.argv[-1] + '.jpg'
+    # imagename = 'contour_' + sys.argv[-1] + '.jpg'
 
     # Read the settings and the case from file
     av = read_settings(inname)
@@ -33,6 +33,12 @@ def main():
     # reference pressures at the inlet plane and therefore the static pressure
     # coefficient
     # INSERT
+
+    c = cut_i(g, 0)
+    p_ref, l = area_av(c, 'p')
+    g['cp'] = (g['p'] - p_ref) / (av['pstag'] - p_ref)
+
+    # END INSERT
 
     # Specify the parameters to plot
     fieldnames = ['cp', 'mach']; 
@@ -61,8 +67,10 @@ def main():
         # Draw the walls of the block
         plot_wall(ax,g)
 
+        # Save each field to its own file
+        plt.savefig('contour_' + sys.argv[-1] + '_' + name + '.jpg')
+
     # Show all the plots
-    plt.savefig(imagename)
     plt.show()
 
     
