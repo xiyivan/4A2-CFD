@@ -1,5 +1,5 @@
-    
-    subroutine flow_guess(av,g,bcs,guesstype)
+
+subroutine flow_guess(av,g,bcs,guesstype)
 
 !   This calculates an initial guess of the primary flowfield variables and
 !   stores them at the nodes within the mesh dataytype
@@ -70,7 +70,7 @@
 !       second dimension with "sum". 
 !       INSERT
 
-        l_i = hypot(g%x(:, nj) - g%x(:,1), g%y(:,nj) - g%x(:,1))
+        l_i = hypot(g%x(:, nj) - g%x(:,1), g%y(:,nj) - g%y(:,1))
         
 !       END INSERT
 
