@@ -122,16 +122,17 @@ subroutine flow_guess(av,g,bcs,guesstype)
 !       includes the kinetic energy component of the internal energy.
 !       INSERT 
 
-        j_mid = nj/2
+        ! j_mid = nj/2
 
-
-        do i = 1,ni-1
-            lx = g%lx_j(i,j_mid); ly = g%ly_j(i,j_mid); 
-            l = hypot(lx,ly)
-            g%ro(i, :) = ro_guess(i)
-            g%roe(i,:) = ro_guess(i) * (av%cv * t_guess(i) + 0.5*v_guess(i)**2)
-            g%rovx(i,:) = ro_guess(i) * v_guess(i) * ly / l
-            g%rovy(i,:) = -ro_guess(i) * v_guess(i) * lx / l
+        do j = 1, nj
+            do i = 1,ni-1
+                lx = g%lx_j(i,j); ly = g%ly_j(i,j); 
+                l = hypot(lx,ly)
+                g%ro(i, j) = ro_guess(i)
+                g%roe(i,j) = ro_guess(i) * (av%cv * t_guess(i) + 0.5*v_guess(i)**2)
+                g%rovx(i,j) = ro_guess(i) * v_guess(i) * ly / l
+                g%rovy(i,j) = -ro_guess(i) * v_guess(i) * lx / l
+            end do
         end do
 
         

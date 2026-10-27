@@ -33,6 +33,15 @@ def calc_secondary(av,b):
     b['mach'] = np.sqrt(b['vx']**2 + b['vy']**2) / \
         np.sqrt(av['gam'] * av['rgas'] * b['t'])
 
+    b['tstag'] = b['t'] * (1 + (av['gam']-1)*b['mach']**2/2)
+    b['pstag'] = b['p'] * (b['tstag']/b['t'])**(av['gam'] / (av['gam'] - 1))
+
+    b['alpha'] = np.degrees(np.arctan2(b['vy'], b['vx']))
+    b['ds'] = (
+    av['cp'] * np.log(b['t'] / av['tstag'])
+    - av['rgas'] * np.log(b['p'] / av['pstag'])
+)
+
     return b
 
 ################################################################################
@@ -686,10 +695,10 @@ def default_settings(casename):
     av['rgas'] = 287; av['gam'] = 1.4
 
     # CFL, smoothing factor and convergence limit
-    av['cfl'] = 0.4; av['sfac'] = 0.5; av['d_max'] = 0.0001;
+    av['cfl'] = 0.4; av['sfac'] = 0.3; av['d_max'] = 0.0001;
 
     # Number of steps
-    av['nsteps'] = 5000; 
+    av['nsteps'] = 10000; 
 
     # Grid size
     av['ni'] = 53; av['nj'] = 37;

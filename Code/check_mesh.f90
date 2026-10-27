@@ -30,7 +30,7 @@
 
     write(6,*) "Minimum area ", area_min
 
-    if (area_min < 0) then
+    if (area_min <= 0) then
         stop "None positive area detected, program exiting"
     else 
         write(6,*) "Area check passed"

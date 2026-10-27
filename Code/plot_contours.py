@@ -35,9 +35,10 @@ def main():
     # INSERT
 
     c = cut_i(g, 0)
-    p_ref, l = area_av(c, 'p')
-    g['cp'] = (g['p'] - p_ref) / (av['pstag'] - p_ref)
-
+    p_ref, _ = area_av(c, 'p')
+    pstag_ref, _ = mass_av(c, 'pstag')
+    g['cp'] = (g['p'] - p_ref) / (pstag_ref - p_ref)
+    
     # END INSERT
 
     # Specify the parameters to plot

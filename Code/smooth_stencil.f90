@@ -48,13 +48,13 @@
 !   INSERT
 
     do i = 2, ni-1
-        prop_avg(i, 1) = (prop(i+1, 1) + prop(i-1, 1) + 4*prop(i, 2) - 2*prop(i,3))/4
-        prop_avg(i, nj) = (prop(i+1, nj) + prop(i-1, nj) + 4*prop(i, nj-1) - 2*prop(i,nj-2))/4
+        prop_avg(i, 1) = (prop(i+1, 1) + prop(i-1, 1) + 2*prop(i, 2) - prop(i,3))/3
+        prop_avg(i, nj) = (prop(i+1, nj) + prop(i-1, nj) + 2*prop(i, nj-1) - prop(i,nj-2))/3
     end do
 
     do j = 2, nj-1
-        prop_avg(1, j) = (prop(1, j+1) + prop(1, j-1) + 4*prop(2, j) - 2*prop(3, j))/4
-        prop_avg(ni, j) = (prop(ni, j+1) + prop(ni, j-1) + 4*prop(ni-1, j) - 2*prop(ni-2, j))/4
+        prop_avg(1, j) = (prop(1, j+1) + prop(1, j-1) + 2*prop(2, j) - prop(3, j))/3
+        prop_avg(ni, j) = (prop(ni, j+1) + prop(ni, j-1) + 2*prop(ni-1, j) - prop(ni-2, j))/3
     end do
 
 !   END INSERT
