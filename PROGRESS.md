@@ -21,6 +21,16 @@ Progress tracker for the initial phase of the Euler solver implementation.
 
 Completed: 14 / 14
 
+## Planned improvements for Extension B
+
+Keep each improvement switchable so its effect can be compared with the basic solver and with the other improvements.
+
+- [ ] Fourth-order smoothing: reduce artificial diffusion, retaining second-order smoothing where needed for stability near shocks.
+- [ ] Refined mesh density: compare uniform spacing with local mesh clustering to improve accuracy for a given node count. Account for non-uniform spacing in the numerical stencils.
+- [ ] Spatially varying timestep: use local timesteps to accelerate convergence towards steady flow. This is a convergence-acceleration method and does not preserve a common physical time across the domain.
+
+Compare accuracy, stability, convergence speed and CPU time with each improvement enabled separately and in combination.
+
 ## Completion evidence
 
 | Script | Commit | Message |
