@@ -90,6 +90,9 @@
 !       Logical array to store wall locations for the nodes
         logical, dimension(:,:), allocatable :: wall
 
+!       Correction variables
+        real, dimension(:,:), allocatable :: corr_ro, corr_roe, corr_rovx, corr_rovy
+
     end type t_grid
 
     end module types

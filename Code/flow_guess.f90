@@ -78,4 +78,10 @@ subroutine flow_guess(av,g,bcs,guesstype)
     av%roe_ref = sum(g%roe(1,:)) / nj
     av%rov_ref = max(sum(g%rovx(1,:)),sum(g%rovy(1,:))) / nj
 
+
+!   initialize corrective primary properties to zero
+    g%corr_ro = 0
+    g%corr_roe = 0
+    g%corr_rovx = 0
+    g%corr_rovy = 0
 end subroutine flow_guess

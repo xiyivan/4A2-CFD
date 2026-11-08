@@ -42,6 +42,9 @@
 !   Secondary variables stored at the nodes for convenience
     allocate(g%p(ni,nj),g%hstag(ni,nj),g%vx(ni,nj),g%vy(ni,nj))
 
+!   corrective variables
+    allocate(g%corr_ro(ni, nj), g%corr_roe(ni, nj), g%corr_rovx(ni, nj), g%corr_rovy(ni, nj))
+
 
     end subroutine allocate_arrays
 

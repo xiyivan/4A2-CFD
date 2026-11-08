@@ -46,4 +46,9 @@ extract:
 
 # Compile .f90 to .o
 %.o:%.f90
-	$(FC) $(FFLAGS) -c $^ -o $@
+	$(FC) $(FFLAGS) -c $< -o $@
+
+# Rebuild module users when their interfaces or derived types change.
+$(filter-out types.o routines.o,$(OBS)): types.o
+calc_areas.o generate_mesh.o check_conv.o: routines.o
+euler_iteration.o: flux_stencil.o smooth_stencil.o

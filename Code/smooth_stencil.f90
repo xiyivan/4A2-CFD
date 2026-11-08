@@ -8,7 +8,7 @@
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    subroutine smooth_array(av,prop)
+    subroutine smooth_array(av,prop,corr)
 
 !   This subroutine smooths "prop" to stabilise the calculation, the basic 
 !   solver uses second order smoothing, many improvements are possible.
@@ -17,9 +17,10 @@
     use types
     implicit none
     type(t_appvars), intent(in) :: av
-    real, intent(inout) :: prop(:,:)
-    real, dimension(size(prop,1),size(prop,2)) :: prop_avg
+    real, intent(inout) :: prop(:,:), corr(:,:)
+    real, dimension(size(prop,1),size(prop,2)) :: prop_avg, corr_total
     integer :: ni, nj, i, j
+    real, parameter :: fcorr = 0.9
 
 !   Get the block size and store locally for convenience
     ni = size(prop,1); nj = size(prop,2)
@@ -62,12 +63,16 @@
 !   The corner values are not currently smoothed
     prop_avg([1,ni],[1,nj]) = prop([1,ni],[1,nj])
 
+!   use correction to reduce artificial viscosity
+    corr_total = fcorr * (prop-prop_avg)
+    corr = 0.99 * corr + 0.01 * corr_total
+
 !   Now apply the artificial viscosity by smoothing "prop" towards "prop_avg",
 !   take (1-sfac) * the calculated value of the property + sfac * the average 
 !   of the surrounding values. 
 !   INSERT
 
-    prop = (1-av%sfac) * prop + av%sfac * prop_avg
+    prop = (1-av%sfac) * prop + av%sfac * (prop_avg + corr)
 
 !   END INSERT
 
