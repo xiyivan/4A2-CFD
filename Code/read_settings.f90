@@ -66,7 +66,7 @@
 !   Read the outlet static pressure and store into the "bcs" datatype
 !   INSERT
 
-    read(5, *) bcs%p_out
+    read(5, *) bcs%p
 
 !   END INSERT
 
@@ -81,8 +81,7 @@
     write(6,*) '  Convergence  d_max =', av%d_max
     write(6,*) '  Mesh size  ni =', av%ni, 'nj =', av%nj
     write(6,*) '  Inlet  pstag =', bcs%pstag, 'tstag =', bcs%tstag, &
-        'alpha = ', bcs%alpha
-    write(6,*) '  Outlet  p_out =', bcs%p_out
+        'alpha = ', bcs%alpha, 'p = ', bcs%p
     write(6,*)
 
     end subroutine read_settings

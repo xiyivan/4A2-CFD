@@ -57,7 +57,7 @@
 
 !   Allocate arrays to store static conditions at the inlet plane now we know
 !   which block the inlet plane is on and its size in the j-direction
-    allocate(bcs%ro(g(bcs%n_in)%nj),bcs%p(g(bcs%n_in)%nj))
+    allocate(bcs%ro(g(bcs%n_in)%nj))
 
 !   Read the number of matching patches
     read(2) av%nm; allocate(p(av%nm));

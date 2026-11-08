@@ -32,13 +32,13 @@
     type t_bconds
 
 !       Single value floats at the inlet
-        real :: pstag, tstag, alpha, rfin, rostag
+        real :: pstag, tstag, alpha, rfin, rostag, p
 
 !       Vectors of floats at the inlet
-        real, dimension(:), allocatable :: p, ro
+        real, dimension(:), allocatable :: ro
 
 !       Single value float at the outlet
-        real :: p_out
+        ! real :: p_out no p_out condition
 
 !       Block numbers of the inlet and outlet in multi-block extension
         integer :: n_in, n_out
