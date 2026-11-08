@@ -1,9 +1,6 @@
 
     module flux_stencil
 
-    real, dimension(:,:), allocatable :: dt_area
-    real :: dt_area_dt = 0.0, dt_area_a11 = 0.0
-
 !   Packaging a subroutine in a module allows it to recieve the data
 !   conveniently as assumed shape arrays
     
@@ -34,25 +31,8 @@
 !   over the timestep "dt", save it in the array "dcell"
 !   INSERT
 
-!    dcell = av%dt / area * (flux_i(1:ni-1, :) - flux_i(2:ni, :) + &
-!            flux_j(:, 1:nj-1) - flux_j(:, 2:nj))
-
-    if (.not. allocated(dt_area)) allocate(dt_area(ni-1,nj-1))
-    if (size(dt_area,1) /= ni-1 .or. size(dt_area,2) /= nj-1) then
-        deallocate(dt_area); allocate(dt_area(ni-1,nj-1))
-        dt_area_dt = -1.0
-    end if
-    if (dt_area_dt /= av%dt .or. dt_area_a11 /= area(1,1)) then
-        dt_area = av%dt / area
-        dt_area_dt = av%dt; dt_area_a11 = area(1,1)
-    end if
-
-    do j = 1, nj-1
-        do i = 1, ni-1
-            dcell(i,j) = dt_area(i,j) * (flux_i(i,j) - flux_i(i+1,j) + &
-                flux_j(i,j) - flux_j(i,j+1))
-        end do
-    end do
+   dcell = av%dt / area * (flux_i(1:ni-1, :) - flux_i(2:ni, :) + &
+           flux_j(:, 1:nj-1) - flux_j(:, 2:nj))
 
 !   END INSERT
 
