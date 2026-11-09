@@ -3,7 +3,8 @@
 
 !   Packaging a subroutine in a module allows it to recieve the data
 !   conveniently as assumed shape arrays
-    
+    use types
+    implicit none
     contains
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -15,8 +16,7 @@
 !   cell and then adds it onto the flow property
 
 !   Explicitly declare the required variables
-    use types
-    implicit none
+
     type(t_appvars), intent(in) :: av
     real, intent(in) :: flux_i(:,:), flux_j(:,:), area(:,:)
     real, intent(inout) :: prop(:,:)
@@ -102,7 +102,6 @@
     end subroutine sum_fluxes
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     end module flux_stencil
 
 

@@ -8,12 +8,14 @@
     use types
     use flux_stencil
     use smooth_stencil
+    use flux_calculation
     implicit none
     type(t_appvars), intent(in) :: av
     type(t_grid), intent(inout) :: g
     real, dimension(g%ni,g%nj-1) :: mass_i, flux_i
     real, dimension(g%ni-1,g%nj) :: mass_j, flux_j
     integer :: i, j, ni, nj
+    integer, parameter :: solution_order = 2
 
 !   Get the block size and store locally for convenience
     ni = g%ni; nj = g%nj
@@ -23,10 +25,9 @@
 !   "mass_i" and "mass_j"
 !   INSERT
 
-    mass_i = g%lx_i * 0.5 * (g%rovx(:, 1:nj-1) + g%rovx(:, 2:nj)) + &
-            g%ly_i * 0.5 * (g%rovy(:, 1:nj-1) + g%rovy(:, 2:nj))
-    mass_j = g%lx_j * 0.5 * (g%rovx(1:ni-1, :) + g%rovx(2:ni, :)) + &
-            g%ly_j * 0.5 * (g%rovy(1:ni-1, :) + g%rovy(2:ni, :))
+    if (solution_order == 2) then
+        call calculate_mass_flux_second_order(g, mass_i, mass_j)
+    end if
     
 !   END INSERT
      
@@ -48,8 +49,9 @@
 !   and "mass_j" from before
 !   INSERT
 
-    flux_i = mass_i * 0.5 * (g%hstag(:, 1:nj-1) + g%hstag(:, 2:nj))
-    flux_j = mass_j * 0.5 * (g%hstag(1:ni-1, :) + g%hstag(2:ni, :))
+    if (solution_order == 2) then
+        call calculate_energy_flux_second_order(g, mass_i, mass_j, flux_i, flux_j)
+    end if
 
 !   END INSERT
 
@@ -63,10 +65,9 @@
 !   Setup the x-momentum equation including momentum flux and pressure forces
 !   INSERT
 
-    flux_i = mass_i * 0.5 * (g%vx(:, 2:nj) + g%vx(:, 1:nj-1)) + &
-            g%lx_i * 0.5 * (g%p(:, 2:nj) + g%p(:, 1:nj-1))
-    flux_j = mass_j * 0.5 * (g%vx(1:ni-1, :) + g%vx(2:ni, :)) + &
-            g%lx_j * 0.5 * (g%p(1:ni-1, :) + g%p(2:ni, :))
+    if (solution_order == 2) then
+        call calculate_x_momentum_flux_second_order(g, mass_i, mass_j, flux_i, flux_j)
+    end if
     
 !   END INSERT
 
@@ -80,10 +81,9 @@
 !   Setup the y-momentum equation including momentum flux and pressure forces
 !   INSERT
 
-    flux_i = mass_i * 0.5 * (g%vy(:, 2:nj) + g%vy(:, 1:nj-1)) + &
-            g%ly_i * 0.5 * (g%p(:, 2:nj) + g%p(:, 1:nj-1))
-    flux_j = mass_j * 0.5 * (g%vy(1:ni-1, :) + g%vy(2:ni, :)) + &
-            g%ly_j * 0.5 * (g%p(1:ni-1, :) + g%p(2:ni, :))
+    if (solution_order == 2)then
+        call calculate_y_momentum_flux_second_order(g, mass_i, mass_j, flux_i, flux_j)
+    end if
 
 !   END INSERT
 

@@ -5,7 +5,7 @@
 SaveName = $(USER)SaveSrc
 SaveName = SaveSrc
 
-OBS = types.o routines.o flux_stencil.o smooth_stencil.o solver.o \
+OBS = types.o routines.o flux_stencil.o smooth_stencil.o flux_calculation.o solver.o \
     read_settings.o allocate_arrays.o read_geom.o generate_mesh.o read_mesh.o \
     calc_areas.o write_output.o check_mesh.o flow_guess.o set_timestep.o \
     set_secondary.o apply_bconds.o euler_iteration.o check_conv.o check_stop.o
@@ -51,4 +51,4 @@ extract:
 # Rebuild module users when their interfaces or derived types change.
 $(filter-out types.o routines.o,$(OBS)): types.o
 calc_areas.o generate_mesh.o check_conv.o: routines.o
-euler_iteration.o: flux_stencil.o smooth_stencil.o
+euler_iteration.o: flux_stencil.o smooth_stencil.o flux_calculation.o
