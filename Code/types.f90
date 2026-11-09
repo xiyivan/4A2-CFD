@@ -17,6 +17,10 @@
         real ::  cfl, sfac, dt, d_max, d_avg
         integer :: nsteps, nstep
 
+!       Optional feature controls (defaults preserve develop behavior)
+        integer :: supersonic = 1, guesstype = 2
+        real :: fcorr = 0.9
+
 !       Reference values of the primary flow variables
         real :: ro_ref, roe_ref, rov_ref
 

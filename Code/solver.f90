@@ -59,14 +59,14 @@
 
 !   Calculate the initial guess of the flowfield in the domain. There are two
 !   options that can be chosen with the input argument "guesstype":
-!       1. Uniform flow properties when "guesstype = 1", this is completed
+!       1. Crude/uniform flow properties when "guesstype = 1", this is completed
 !          for you already, it will allow you to get the solver started but
 !          convergence will take more iterations.
 !       2. A 1D varying flowfield when "guesstype = 2", assuming isentropic
 !          flow in the i-direction allows a calculation of a better
 !          approximation to the converged flowfield and so the time to
-!          solution will be reduced. You will need to complete this option.
-    call flow_guess(av,g,bcs,2)
+!          solution will be reduced. The input selects this option.
+    call flow_guess(av,g,bcs,av%guesstype)
 
 !   Optional output call to inspect the initial guess of the flowfield
     call write_output(av,g,2)

@@ -590,13 +590,32 @@ def read_settings(filename):
     av['pstag'],av['tstag'],av['alpha'],av['rfin'] = \
         [float(x) for x in f.readline().split()]
  
-    # Read the outlet boundary condition
+    # Static pressure: subsonic outlet or supersonic inlet
     av['p'] = [float(x) for x in f.readline().split()]
 
-    # Close the file 
+    # Optional feature settings; legacy files retain develop defaults.
+    options = f.readline()
     f.close()
+    av.update(supersonic=1, guesstype=2, fcorr=0.9)
+    if options:
+        fields = options.split()
+        if len(fields) != 3:
+            raise ValueError('Expected feature settings: supersonic guesstype fcorr')
+        av['supersonic'], av['guesstype'] = map(int, fields[:2])
+        av['fcorr'] = float(fields[2])
+    validate_feature_settings(av)
 
     return(av)
+
+################################################################################
+
+def validate_feature_settings(av):
+    if av['supersonic'] not in (0, 1):
+        raise ValueError('supersonic must be 0 or 1')
+    if av['guesstype'] not in (1, 2):
+        raise ValueError('guesstype must be 1 or 2')
+    if not np.isfinite(av['fcorr']) or not 0 <= av['fcorr'] <= 1:
+        raise ValueError('fcorr must be finite and between 0 and 1')
 
 ################################################################################
 
@@ -706,8 +725,11 @@ def default_settings(casename):
     # Inlet boundary condition
     av['pstag'] = 100000; av['tstag'] = 300; av['alpha'] = 0; av['rfin'] = 0.25;
  
-    # Outlet boundary condition
+    # Static pressure: subsonic outlet or supersonic inlet
     av['p'] = 75000;
+
+    # Feature controls: preserve current develop behavior.
+    av['supersonic'] = 1; av['guesstype'] = 2; av['fcorr'] = 0.9;
 
     return(av)
 
@@ -715,6 +737,9 @@ def default_settings(casename):
 
 def write_settings(av):
     # Create an input file with settings and boundary conditions
+    features = dict(supersonic=1, guesstype=2, fcorr=0.9)
+    features.update({key: av[key] for key in features if key in av})
+    validate_feature_settings(features)
 
     # Open the file to write
     filename = 'input_' + av['casename'] + '.txt'
@@ -738,8 +763,11 @@ def write_settings(av):
     # Write the inlet boundary condition
     f.write('%f %f %f %f\n' % (av['pstag'],av['tstag'],av['alpha'],av['rfin']))
  
-    # Write the outlet boundary condition
+    # Static pressure: subsonic outlet or supersonic inlet
     f.write('%f\n' % (av['p']))
+
+    # Optional controls, also understood by the Fortran settings reader.
+    f.write('%d %d %.9g\n' % (features['supersonic'], features['guesstype'], features['fcorr']))
 
     # Close the file 
     f.close()

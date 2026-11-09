@@ -20,7 +20,6 @@
     real, intent(inout) :: prop(:,:), corr(:,:)
     real, dimension(size(prop,1),size(prop,2)) :: prop_avg, corr_total
     integer :: ni, nj, i, j
-    real, parameter :: fcorr = 0.9
 
 !   Get the block size and store locally for convenience
     ni = size(prop,1); nj = size(prop,2)
@@ -64,8 +63,12 @@
     prop_avg([1,ni],[1,nj]) = prop([1,ni],[1,nj])
 
 !   use correction to reduce artificial viscosity
-    corr_total = fcorr * (prop-prop_avg)
-    corr = 0.99 * corr + 0.01 * corr_total
+    if (av%fcorr == 0.0) then
+        corr = 0.0
+    else
+        corr_total = av%fcorr * (prop-prop_avg)
+        corr = 0.99 * corr + 0.01 * corr_total
+    end if
 
 !   Now apply the artificial viscosity by smoothing "prop" towards "prop_avg",
 !   take (1-sfac) * the calculated value of the property + sfac * the average 

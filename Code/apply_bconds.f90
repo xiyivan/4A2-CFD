@@ -16,9 +16,23 @@
 !   INSERT
     real :: v(g%nj), T(g%nj)
 
-!   Calculate Mach number at the inlet
-    T = bcs%tstag * (bcs%p/bcs%pstag)**(av%fgam)
-    bcs%ro = bcs%p/(av%rgas * T)
+!   Set inlet thermodynamic conditions according to the boundary mode
+    if (av%supersonic == 1) then
+        T = bcs%tstag * (bcs%p/bcs%pstag)**av%fgam
+        bcs%ro = bcs%p/(av%rgas * T)
+        g%p(1,:) = bcs%p
+    else
+!       Restore the relaxed subsonic inlet from master.
+        if (av%nstep == 1) then
+            bcs%ro = g%ro(1,:)
+        else
+            bcs%ro = bcs%rfin * g%ro(1,:) + (1 - bcs%rfin) * bcs%ro
+        end if
+        bcs%ro = min(bcs%ro,0.9999 * bcs%rostag)
+        g%p(1,:) = bcs%pstag * (bcs%ro/bcs%rostag)**av%gam
+        T = g%p(1,:)/(av%rgas * bcs%ro)
+        g%p(g%ni,:) = bcs%p
+    end if
 
 !   Calculate "p(1,:)", "rovx(1,:)", "rovy(1,:)" and "roe(1,:)" from the inlet 
 !   "ro(:)", "pstag", "tstag" and "alpha". Also set "vx(1,:)", "vy(1,:)" and 
@@ -26,7 +40,6 @@
 !   INSERT
 
     g%ro(1, :) = bcs%ro
-    g%p(1, :) = bcs%p
     v = sqrt((bcs%tstag - T)*2*av%cp)
     g%vx(1,:) = v * cos(bcs%alpha)
     g%vy(1,:) = v * sin(bcs%alpha)

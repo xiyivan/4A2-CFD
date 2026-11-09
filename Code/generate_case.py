@@ -15,6 +15,7 @@ def gen_bend(casename):
     # Settings and boundary conditions
     av = default_settings(casename)
     av['p'] = 50e3; av['alpha'] = 45;
+    av.update(supersonic=0, guesstype=2, fcorr=0)
 
     # Initialise the dictionary to store the curves
     geom = {}
@@ -46,6 +47,7 @@ def gen_bump(casename):
     # Settings and boundary conditions
     av = default_settings(casename)
     av['p'] = 85e3;
+    av.update(supersonic=0, guesstype=2, fcorr=0)
 
     # Initialise the dictionary to store the curves
     geom = {}
@@ -168,6 +170,7 @@ def gen_waves(casename):
 
     # Settings and boundary conditions
     av = default_settings(casename)
+    av.update(supersonic=1, guesstype=2, fcorr=0.9)
 
     # Set static pressure as ratio of inlet stagnation - note this is static
     # pressure at the inlet plane for a supersonic inlet boundary condition

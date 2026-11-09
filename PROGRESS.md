@@ -21,6 +21,76 @@ Progress tracker for the initial phase of the Euler solver implementation.
 
 Completed: 14 / 14
 
+## Solver configuration (`read_settings`)
+
+- [x] Select subsonic or supersonic boundary conditions from input.
+- [x] Select crude/uniform or refined initialization from input.
+- [x] Configure deferred correction strength, including disabling it.
+- [x] Generate and read feature settings in Python and Fortran.
+
+`Code/generate_case.py` uses `default_settings` and `write_settings` in
+`Code/routines.py`. Change the returned settings dictionary in a case generator,
+or edit the generated input file directly. The input records are:
+
+```text
+casename
+gam rgas
+cfl sfac d_max
+nsteps
+ni nj
+pstag tstag alpha rfin
+p
+supersonic guesstype fcorr
+```
+
+The last line is optional. Omitting it preserves current `develop` defaults:
+`1 2 0.9`. Generated files include it explicitly. Both readers reject malformed
+feature settings and values outside the supported ranges.
+
+| Setting | Allowed values | Default | Effect |
+| --- | --- | --- | --- |
+| `supersonic` | `0`, `1` | `1` | `0`: relaxed subsonic inlet and prescribed outlet pressure from `master` (`73f3384`). `1`: prescribed supersonic inlet and no imposed outlet pressure. |
+| `guesstype` | `1`, `2` | `2` | `1`: crude subsonic guess or uniform supersonic inlet state. `2`: refined subsonic guess or supersonic mass-flow/Mach bisection guess. |
+| `fcorr` | finite real in `[0, 1]` | `0.9` | Deferred correction strength. `0` disables its effect and clears correction history; `0.9` retains previous behavior. History relaxation remains `0.99 * old + 0.01 * target`. |
+
+`p` is **outlet static pressure** with `supersonic = 0` and **inlet static
+pressure** with `supersonic = 1`; use pressure appropriate to the chosen mode.
+`alpha` is read in degrees and converted to radians. `rfin` controls inlet
+density relaxation only in subsonic mode. Fortran scales `sfac` and `d_max` by
+`cfl`, then sets `d_avg = 0.5 * d_max`. Selected feature settings and the pressure
+interpretation are printed in the solver log.
+
+Examples of the final line:
+
+```text
+1 2 0.9
+```
+
+retains current `develop` behavior; `0 2 0` selects restored subsonic behavior
+with refined initialization and deferred correction off; `1 1 0` selects a
+uniform supersonic guess with deferred correction off.
+
+Flux-stencil fixes, the second-order flux module, and plotting improvements
+remain enabled. Fourth-order flux is an unimplemented stub; fourth-order
+smoothing, mesh clustering, local timesteps, and multi-block repairs are outside
+this configuration change.
+
+### Configuration verification
+
+Validated with `gfortran -fcheck=all -g` on a nonuniform 25-by-9 duct mesh
+for 50 steps:
+
+- All eight combinations of boundary mode, guess type and correction off/on
+  produced finite flow fields; Python settings round trips passed.
+- Legacy input and explicit `1 2 0.9` produced identical final output.
+- Default initialization and final output matched original `develop` exactly;
+  restored subsonic refined initialization with correction off matched `master`
+  exactly for this case.
+- Both readers rejected ten malformed/out-of-range records, including nonfinite
+  correction strengths. Correction on/off changed the flow in both modes.
+
+These are configuration and regression checks, not full convergence studies.
+
 ## Planned improvements for Extension B
 
 Keep each improvement switchable so its effect can be compared with the basic solver and with the other improvements.
@@ -57,6 +127,8 @@ Application variables and gas constants; holds run settings rather than mesh dat
 | `d_max`, `d_avg` | `real` | Convergence criteria (maximum and average normalised residuals) |
 | `nsteps` | `integer` | Total number of timesteps requested |
 | `nstep` | `integer` | Current timestep number |
+| `supersonic`, `guesstype` | `integer` | Boundary mode and initialization selection; see configuration above |
+| `fcorr` | `real` | Deferred correction strength (`0` disables correction) |
 | `ro_ref`, `roe_ref`, `rov_ref` | `real` | Reference values of the primary flow variables, used to normalise residuals |
 | `ni`, `nj` | `integer` | Mesh size, set for single-block test cases |
 | `nn`, `nm` | `integer` | Number of blocks and matching patches for the multi-block extension |
@@ -77,6 +149,7 @@ Grid geometry plus all flow variables stored on the mesh.
 | `dro`, `droe`, `drovx`, `drovy` | `real(:,:)` | Cell-centred increments (updates/residuals) of the primary variables |
 | `p`, `hstag`, `vx`, `vy` | `real(:,:)` | Secondary variables at the nodes: pressure, stagnation enthalpy, $x$- and $y$-velocity |
 | `wall` | `logical(:,:)` | Flags nodes lying on a solid wall boundary |
+| `corr_ro`, `corr_roe`, `corr_rovx`, `corr_rovy` | `real(:,:)` | Deferred correction histories, initialized to zero |
 
 ### `bcs` — `t_bconds`
 
@@ -88,6 +161,6 @@ Boundary condition data for the inlet and outlet. Populated by `read_settings.f9
 | `alpha` | `real` | Inlet flow angle, converted from degrees to radians in `read_settings` |
 | `rfin` | `real` | Relaxation factor for the inlet density update (typically 0.25) |
 | `rostag` | `real` | Inlet stagnation density, computed as `pstag / (rgas * tstag)` |
-| `p`, `ro` | `real(:)` | Static pressure and density along the inlet plane, dimension `(nj)`; `ro` is relaxed each timestep in `apply_bconds` and limited to just below `rostag` for stability |
-| `p_out` | `real` | Outlet static pressure |
+| `p` | `real` | Prescribed static pressure: outlet in subsonic mode, inlet in supersonic mode |
+| `ro` | `real(:)` | Inlet density, dimension `(nj)`; relaxed and limited below `rostag` in subsonic mode, prescribed in supersonic mode |
 | `n_in`, `n_out` | `integer` | Block numbers of the inlet and outlet, used in the multi-block extension |
